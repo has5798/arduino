@@ -45,9 +45,28 @@ async function GetDataByTemp(choice_temp){
   }
 }
 
+// Data 생성
+async function CreateData(choice_time, choice_temp, choice_humi, choice_cds) {
+    let conn, results;
+    try{
+      conn = await pool.getConnection();
+      conn.query('USE ' + vals.database);
+      results = await conn.query('INSERT INTO dht VALUES(now(), ' + choice_temp + ', ' + choice_humi + ', ' + choice_cds + ')');
+    }
+    catch(err){
+      throw err;
+    }
+    finally{
+      if (conn) conn.end();
+      return results;
+    }
+}
+
+
 
 
 module.exports = {
   getDataList: GetDataList,
-  getDataByTemp: GetDataByTemp
+  getDataByTemp: GetDataByTemp,
+  createData: CreateData
 }
